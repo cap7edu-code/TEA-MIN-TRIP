@@ -83,6 +83,7 @@
     white-space:nowrap;
   }
   .seg button.active{background:#fff;color:var(--navy);}
+  .toolbar-lang-seg{flex:none;order:1;}
 
   .stage{max-width:1440px;margin:0 auto;padding:36px 20px 60px;display:flex;justify-content:center;}
 
@@ -537,6 +538,15 @@
     }
     .toolbar-controls.open{display:flex;}
     .toolbar{position:relative;}
+    /* The bottom nav bar (icons + labels + its own padding) runs
+       roughly 64px tall on a real phone. The chat cat's fixed bottom:20px
+       position was measured against a full browser window with no such
+       bar, so on an actual phone it landed on top of the bottom nav's
+       last item instead of floating above it. Push both the button and
+       the panel above that bar here, mobile-only — desktop keeps the
+       original offsets since there's no bottom nav to clear there. */
+    .cat-chat-fab{bottom:78px;}
+    .cat-chat-panel{bottom:146px;max-height:calc(100vh - 210px);}
   }
 </style>
 </head>
@@ -667,15 +677,12 @@
     </svg>
     <div class="brand-text"><b>TEA-MIN-TRIP</b><span id="brand-trip-name">เฉิงตู–จิ่วจ้ายโกว 2026</span></div>
   </div>
+  <span class="seg toolbar-lang-seg" id="langSeg">
+    <button class="active" data-lang="th">ไทย</button>
+    <button data-lang="en">EN</button>
+  </span>
   <button id="mobileSettingsBtn" class="mobile-settings-btn" onclick="toggleMobileToolbar()" data-icon="settings"></button>
   <div class="toolbar-controls" id="toolbarExtra">
-    <div>
-      <span class="seg-label i18n" data-th="ภาษา" data-en="Language">ภาษา</span>
-      <span class="seg" id="langSeg">
-        <button class="active" data-lang="th">ไทย</button>
-        <button data-lang="en">EN</button>
-      </span>
-    </div>
     <button id="replay-landing-btn" onclick="replayLandingSplash()" title="ดูหน้าแนะนำแอพอีกครั้ง" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:20px;padding:7px 12px;font-size:11.5px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;"><span data-icon="compass" class="ic-inline"></span><span class="i18n" data-th="แนะนำแอพ" data-en="App intro">แนะนำแอพ</span></button>
     <button id="identity-chip" onclick="reopenJoinGate()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:20px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;display:none;align-items:center;gap:6px;"></button>
   </div>
