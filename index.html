@@ -33,7 +33,7 @@
   .ls-scroll{width:100%;height:100%;overflow-y:auto;font-family:"Segoe UI",-apple-system,sans-serif;display:flex;flex-direction:column;}
   .ls-hero{position:relative;flex:1;min-height:340px;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:24px;}
   .ls-sky{position:absolute;inset:0;background:radial-gradient(circle at 50% 15%,rgba(108,92,231,0.28),#05060f 72%);}
-  .ls-cat-stage{position:relative;width:170px;height:170px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
+  .ls-cat-stage{position:relative;width:170px;height:170px;display:flex;align-items:flex-end;justify-content:center;margin:26px 0 6px;}
   .ls-cat-ring{position:absolute;width:100%;height:100%;border-radius:50%;border:1px solid rgba(157,147,240,0.4);animation:lsRingPulse 3.2s ease-out infinite;}
   .ls-cat-ring.b{animation-delay:1.05s;}
   .ls-cat-ring.c{animation-delay:2.1s;}
@@ -58,11 +58,29 @@
   .ls-avatars .ls-dot{width:24px;height:24px;border-radius:50%;border:2px solid #05060f;margin-left:-8px;animation:lsFloat 3s ease-in-out infinite;object-fit:cover;display:block;background:#1b1e3a;}
   .ls-avatars .ls-dot:first-child{margin-left:0;}
   .ls-avatars span{color:rgba(255,255,255,0.5);font-size:11px;margin-left:4px;}
+  .ls-lang-toggle{position:absolute;top:14px;right:14px;z-index:2;display:inline-flex;background:rgba(255,255,255,0.1);border-radius:20px;padding:3px;gap:2px;}
+  .ls-lang-toggle button{border:none;background:transparent;color:rgba(255,255,255,0.6);font-size:11px;font-weight:700;padding:5px 10px;border-radius:16px;cursor:pointer;font-family:inherit;}
+  .ls-lang-toggle button.active{background:rgba(255,255,255,0.18);color:#fff;}
   .ls-features{flex:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:rgba(255,255,255,0.06);}
   .ls-feature{background:#0a0c1c;padding:20px 16px;animation:lsFadeUp .7s ease both;}
   .ls-feature-icon{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;}
   .ls-feature-title{color:#fff;font-size:13px;font-weight:600;margin-bottom:3px;}
   .ls-feature-sub{color:rgba(255,255,255,0.45);font-size:11.5px;line-height:1.5;}
+  /* Desktop keeps the auto-fit behavior above untouched (it already
+     looks right there). On phone-width screens, auto-fit was only
+     fitting 3 of the 4 items at their 140px minimum, wrapping the 4th
+     alone into its own row with two empty-looking cells next to it.
+     Forcing exactly 4 columns here — and shrinking each item's padding/
+     icon/text proportionally — keeps all 4 features in one clean row
+     instead. */
+  @media (max-width: 899px){
+    .ls-features{grid-template-columns:repeat(4,1fr);}
+    .ls-feature{padding:12px 6px;}
+    .ls-feature-icon{width:24px;height:24px;border-radius:7px;margin-bottom:7px;}
+    .ls-feature-icon svg{width:13px;height:13px;}
+    .ls-feature-title{font-size:10.5px;margin-bottom:2px;line-height:1.25;}
+    .ls-feature-sub{font-size:9px;line-height:1.35;}
+  }
   @keyframes lsGlowDrift{0%,100%{transform:translate(0,0);}50%{transform:translate(18px,-14px);}}
   @keyframes lsFadeUp{from{opacity:0;transform:translateY(16px);}to{opacity:1;transform:translateY(0);}}
   @keyframes lsPulse{0%,100%{box-shadow:0 0 0 0 rgba(157,147,240,0.5);}50%{box-shadow:0 0 0 10px rgba(157,147,240,0);}}
@@ -556,6 +574,9 @@
   <div class="ls-scroll">
     <div class="ls-hero">
       <div class="ls-sky"></div>
+      <div class="ls-lang-toggle" id="lsLangToggle">
+        <button data-lang="th" class="active">ไทย</button><button data-lang="en">EN</button>
+      </div>
       <div class="ls-fu ls-cat-stage" style="animation-delay:0s;">
         <div class="ls-cat-ring a"></div>
         <div class="ls-cat-ring b"></div>
@@ -564,13 +585,13 @@
         <div class="ls-cat-spark" style="top:78%;left:82%;animation-delay:.7s;"></div>
         <div class="ls-cat-spark" style="top:14%;left:84%;animation-delay:1.3s;"></div>
         <div class="ls-cat-spark" style="top:82%;left:16%;animation-delay:2s;"></div>
-        <svg class="cat-logo ls-cat-hero" width="130" height="130" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 22px rgba(157,147,240,0.7));">
-          <path class="cat-tail" d="M30 55 Q10 60 8 80 Q30 78 34 62 Z" fill="#2a2f5c"/>
-          <ellipse cx="55" cy="65" rx="30" ry="26" fill="#2a2f5c"/>
-          <path d="M32 42 L40 20 L48 44 Z" fill="#2a2f5c"/>
-          <path d="M78 42 L70 20 L62 44 Z" fill="#2a2f5c"/>
-          <ellipse class="cat-eye" cx="44" cy="60" rx="5" ry="7" fill="#9d93f0"/>
-          <ellipse class="cat-eye" cx="66" cy="60" rx="5" ry="7" fill="#9d93f0"/>
+        <svg class="cat-logo ls-cat-hero" width="128" height="128" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 0 22px rgba(157,147,240,0.7));">
+          <path class="cat-tail" d="M32 68 Q16 74 20 92 Q36 88 38 74 Z" fill="#2a2f5c"/>
+          <path d="M26 46 Q19 24 39 33 Q34 44 30 50 Z" fill="#2a2f5c"/>
+          <path d="M84 46 Q91 24 71 33 Q76 44 80 50 Z" fill="#2a2f5c"/>
+          <ellipse cx="55" cy="63" rx="33" ry="30" fill="#2a2f5c"/>
+          <ellipse class="cat-eye" cx="45" cy="61" rx="5" ry="7" fill="#9d93f0"/>
+          <ellipse class="cat-eye" cx="65" cy="61" rx="5" ry="7" fill="#9d93f0"/>
         </svg>
       </div>
       <div class="ls-vignette"></div>
@@ -588,10 +609,10 @@
           </svg>
           <span>TEA-MIN-TRIP</span>
         </div>
-        <div class="ls-fu ls-title" style="animation-delay:.25s;">One group trip.<br>Zero group chat chaos.</div>
+        <div class="ls-fu ls-title" style="animation-delay:.25s;" id="ls-title"></div>
         <div class="ls-fu ls-badges" style="animation-delay:.4s;" id="ls-badges"></div>
         <div class="ls-fu ls-sub" style="animation-delay:.55s;" id="ls-sub"></div>
-        <button class="ls-fu ls-cta" style="animation-delay:.7s;" id="ls-cta-btn">Enter your trip →</button>
+        <button class="ls-fu ls-cta" style="animation-delay:.7s;" id="ls-cta-btn"></button>
         <div class="ls-fu ls-avatars" style="animation-delay:.85s;" id="ls-avatars"></div>
       </div>
     </div>
@@ -3222,10 +3243,10 @@ function applyTripIdentity(){
 // ============================================================
 var LANDING_SEEN_KEY = 'tmt_seen_landing';
 var LS_FEATURES = [
-  { icon:'calendar', color:'#9d93f0', bg:'rgba(108,92,231,0.18)', title:'Day-by-day itinerary', sub:'Real photos for every stop' },
-  { icon:'wallet', color:'#4ecdc4', bg:'rgba(0,184,148,0.18)', title:'Split expenses', sub:'Auto-calculated, who owes who' },
-  { icon:'users', color:'#ff9f43', bg:'rgba(255,159,67,0.18)', title:'Member profiles', sub:'Phone, passport, all in one spot' },
-  { icon:'map', color:'#e85d75', bg:'rgba(232,93,117,0.18)', title:'Live route map', sub:'Open in AMap with one tap' }
+  { icon:'calendar', color:'#9d93f0', bg:'rgba(108,92,231,0.18)', title_en:'Day-by-day itinerary', sub_en:'Real photos for every stop', title_th:'แผนเที่ยวรายวัน', sub_th:'รูปจริงของทุกจุดหมาย' },
+  { icon:'wallet', color:'#4ecdc4', bg:'rgba(0,184,148,0.18)', title_en:'Split expenses', sub_en:'Auto-calculated, who owes who', title_th:'หารค่าใช้จ่าย', sub_th:'คำนวณอัตโนมัติ ใครติดเงินใคร' },
+  { icon:'users', color:'#ff9f43', bg:'rgba(255,159,67,0.18)', title_en:'Member profiles', sub_en:'Phone, passport, all in one spot', title_th:'โปรไฟล์สมาชิก', sub_th:'เบอร์โทร พาสปอร์ต ครบในที่เดียว' },
+  { icon:'map', color:'#e85d75', bg:'rgba(232,93,117,0.18)', title_en:'Live route map', sub_en:'Open in AMap with one tap', title_th:'แผนที่เส้นทางสด', sub_th:'เปิด AMap ได้ในแตะเดียว' }
 ];
 function fmtLandingDateRange(t){
   if(!t || !t.start_date) return '';
@@ -3251,36 +3272,49 @@ function renderLandingSplash(){
   // identifiable trip) are deliberately left out; the only live number
   // kept is a generic day-countdown, since that's a feature idea
   // ("count down to your trip") rather than a personal detail.
+  var th = LANG === 'th';
+
+  document.getElementById('ls-title').innerHTML = th
+    ? 'ทริปกลุ่มเดียว<br>ไม่ต้องวุ่นในแชท'
+    : 'One group trip.<br>Zero group chat chaos.';
+
+  document.getElementById('ls-cta-btn').textContent = th ? 'เข้าสู่ทริปของคุณ →' : 'Enter your trip →';
+
   var now = new Date();
   var diffDays = Math.ceil((TRIP_START - now) / 86400000);
   var badges = [];
-  if(diffDays > 0) badges.push('<span class="ls-badge teal">' + diffDays + ' DAYS TO GO</span>');
-  else if(now >= TRIP_START && now <= TRIP_END) badges.push('<span class="ls-badge teal">TRIP IN PROGRESS</span>');
-  else badges.push('<span class="ls-badge teal">COUNTDOWN TO YOUR TRIP</span>');
-  badges.push('<span class="ls-badge accent">ITINERARY</span>');
-  badges.push('<span class="ls-badge">EXPENSES</span>');
-  badges.push('<span class="ls-badge">LIVE MAP</span>');
+  if(diffDays > 0) badges.push('<span class="ls-badge teal">' + (th ? ('อีก ' + diffDays + ' วัน') : (diffDays + ' DAYS TO GO')) + '</span>');
+  else if(now >= TRIP_START && now <= TRIP_END) badges.push('<span class="ls-badge teal">' + (th ? 'กำลังเดินทาง' : 'TRIP IN PROGRESS') + '</span>');
+  else badges.push('<span class="ls-badge teal">' + (th ? 'นับถอยหลังสู่ทริป' : 'COUNTDOWN TO YOUR TRIP') + '</span>');
+  badges.push('<span class="ls-badge accent">' + (th ? 'แผนเที่ยว' : 'ITINERARY') + '</span>');
+  badges.push('<span class="ls-badge">' + (th ? 'ค่าใช้จ่าย' : 'EXPENSES') + '</span>');
+  badges.push('<span class="ls-badge">' + (th ? 'แผนที่สด' : 'LIVE MAP') + '</span>');
   document.getElementById('ls-badges').innerHTML = badges.join('');
 
-  document.getElementById('ls-sub').textContent =
-    'Itinerary, expenses, member profiles, and live maps — all in one place, updated instantly for everyone.';
+  document.getElementById('ls-sub').textContent = th
+    ? 'แผนเที่ยว ค่าใช้จ่าย โปรไฟล์สมาชิก และแผนที่สด — ครบในที่เดียว อัปเดตให้ทุกคนเห็นทันที'
+    : 'Itinerary, expenses, member profiles, and live maps — all in one place, updated instantly for everyone.';
 
   var avEl = document.getElementById('ls-avatars');
   var seeds = [1,2,3,4];
   var dotsHtml = seeds.map(function(s){
     return '<img class="ls-dot" src="'+catAvatarUri(s)+'" alt="">';
   }).join('');
-  avEl.innerHTML = dotsHtml + '<span>already in</span>';
+  avEl.innerHTML = dotsHtml + '<span>' + (th ? 'เข้าร่วมแล้ว' : 'already in') + '</span>';
 
   var featEl = document.getElementById('ls-features');
   featEl.innerHTML = LS_FEATURES.map(function(f, i){
     return '<div class="ls-feature" style="animation-delay:' + (0.15 + i * 0.15) + 's;">' +
       '<div class="ls-feature-icon" style="background:' + f.bg + ';">' + ICON(f.icon, 17).replace('currentColor', f.color) + '</div>' +
-      '<div class="ls-feature-title">' + f.title + '</div>' +
-      '<div class="ls-feature-sub">' + f.sub + '</div>' +
+      '<div class="ls-feature-title">' + (th ? f.title_th : f.title_en) + '</div>' +
+      '<div class="ls-feature-sub">' + (th ? f.sub_th : f.sub_en) + '</div>' +
     '</div>';
   }).join('');
   applyIcons();
+
+  document.querySelectorAll('#lsLangToggle button').forEach(function(b){
+    b.classList.toggle('active', b.dataset.lang === LANG);
+  });
 }
 function dismissLandingSplash(){
   try { localStorage.setItem(LANDING_SEEN_KEY, '1'); } catch(e){}
@@ -3801,6 +3835,7 @@ function renderAll(){
 
   applyLang();
   applyIcons();
+  renderLandingSplash();
 }
 
 function renderAvatarStrip(containerId){
@@ -3857,6 +3892,17 @@ function renderSidebarUser(){
 }
 
 document.getElementById('langSeg').addEventListener('click', function(e){
+  var btn = e.target.closest('button');
+  if(!btn) return;
+  LANG = btn.dataset.lang;
+  renderAll();
+});
+
+// The landing splash sits above the toolbar (z-index 700) and covers it
+// completely, so the toolbar's language toggle is unreachable while the
+// splash is showing — this is a second, always-visible toggle scoped to
+// the splash itself, wired to the same global LANG + renderAll().
+document.getElementById('lsLangToggle').addEventListener('click', function(e){
   var btn = e.target.closest('button');
   if(!btn) return;
   LANG = btn.dataset.lang;
