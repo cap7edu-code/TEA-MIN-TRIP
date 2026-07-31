@@ -55,7 +55,7 @@
   .ls-sub{font-size:14px;color:rgba(255,255,255,0.72);margin-top:16px;}
   .ls-cta{margin-top:22px;background:#6c5ce7;color:#fff;border:none;border-radius:30px;padding:13px 30px;font-size:14px;font-weight:700;cursor:pointer;animation:lsFadeUp .7s ease both, lsPulse 2.4s ease-in-out infinite;animation-delay:.7s,1.4s;font-family:inherit;}
   .ls-avatars{display:flex;align-items:center;gap:6px;margin-top:20px;}
-  .ls-avatars .ls-dot{width:24px;height:24px;border-radius:50%;border:2px solid #05060f;margin-left:-8px;animation:lsFloat 3s ease-in-out infinite;}
+  .ls-avatars .ls-dot{width:24px;height:24px;border-radius:50%;border:2px solid #05060f;margin-left:-8px;animation:lsFloat 3s ease-in-out infinite;object-fit:cover;display:block;background:#1b1e3a;}
   .ls-avatars .ls-dot:first-child{margin-left:0;}
   .ls-avatars span{color:rgba(255,255,255,0.5);font-size:11px;margin-left:4px;}
   .ls-features{flex:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1px;background:rgba(255,255,255,0.06);}
@@ -263,6 +263,13 @@
 
   .exp-row{display:flex;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid var(--line);}
   .exp-row:last-child{border-bottom:none;}
+  .exp-day-head{font-size:11px;font-weight:800;color:var(--sub);text-transform:uppercase;letter-spacing:.03em;padding:14px 0 6px;}
+  .exp-day-head:first-child{padding-top:0;}
+  .exp-row.excluded{opacity:.5;}
+  .exp-row.excluded .exp-amt{text-decoration:line-through;}
+  .exp-excluded-tag{font-size:9.5px;font-weight:700;color:var(--sub);background:#f2f4f7;padding:1px 6px;border-radius:8px;margin-left:4px;white-space:nowrap;}
+  .exp-inc-toggle{flex:none;display:flex;align-items:center;padding-top:2px;}
+  .exp-inc-toggle input{width:15px;height:15px;cursor:pointer;}
   .exp-icon{width:36px;height:36px;border-radius:11px;display:flex;align-items:center;justify-content:center;flex:none;font-size:16px;}
   .exp-mid{flex:1;min-width:0;}
   .exp-name{font-size:13px;font-weight:800;margin:0;word-break:break-word;}
@@ -1088,6 +1095,17 @@
       </div>
     </div>
 
+    <div class="form-group" style="display:flex;gap:10px;">
+      <div style="flex:1;">
+        <label class="form-label i18n" data-th="วันที่" data-en="Date">วันที่</label>
+        <input type="date" class="form-input" id="f-date">
+      </div>
+      <div style="flex:1;">
+        <label class="form-label i18n" data-th="เวลา" data-en="Time">เวลา</label>
+        <input type="time" class="form-input" id="f-time">
+      </div>
+    </div>
+
     <div class="form-group">
       <label class="form-label i18n" data-th="ใครจ่ายก่อน" data-en="Paid by">ใครจ่ายก่อน</label>
       <div class="avatar-pick-row" id="f-payer-picks"></div>
@@ -1097,6 +1115,8 @@
       <label class="form-label i18n" data-th="หารกับใครบ้าง" data-en="Split between">หารกับใครบ้าง</label>
       <div class="avatar-pick-row" id="f-split-picks"></div>
     </div>
+
+    <label class="check-row"><input type="checkbox" id="f-exclude"><span class="i18n" data-th="ไม่นับรวมยอดนี้ในสรุป/หารเงิน" data-en="Exclude this from totals and splitting">ไม่นับรวมยอดนี้ในสรุป/หารเงิน</span></label>
 
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeAddExpenseModal()"><span class="i18n" data-th="ยกเลิก" data-en="Cancel">ยกเลิก</span></button>
@@ -1336,13 +1356,13 @@
 </button>
 <div class="cat-chat-panel" id="catChatPanel">
   <div class="ccp-header">
-    <svg width="26" height="26" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg" style="flex:none;">
-      <path d="M30 55 Q10 60 8 80 Q30 78 34 62 Z" fill="#fff"/>
+    <svg class="cat-logo" width="26" height="26" viewBox="0 0 110 110" xmlns="http://www.w3.org/2000/svg" style="flex:none;">
+      <path class="cat-tail" d="M30 55 Q10 60 8 80 Q30 78 34 62 Z" fill="#fff"/>
       <ellipse cx="55" cy="65" rx="30" ry="26" fill="#fff"/>
       <path d="M32 42 L40 20 L48 44 Z" fill="#fff"/>
       <path d="M78 42 L70 20 L62 44 Z" fill="#fff"/>
-      <ellipse cx="44" cy="60" rx="5" ry="7" fill="var(--navy)"/>
-      <ellipse cx="66" cy="60" rx="5" ry="7" fill="var(--navy)"/>
+      <ellipse class="cat-eye" cx="44" cy="60" rx="5" ry="7" fill="var(--navy)"/>
+      <ellipse class="cat-eye" cx="66" cy="60" rx="5" ry="7" fill="var(--navy)"/>
     </svg>
     <div><b>คุยกับแมว TEA-MIN-TRIP</b><span class="sub">ผู้ช่วยวางแผนทริป (ทดลอง)</span></div>
     <button class="ccp-close" id="ccpCloseBtn" aria-label="ปิด">×</button>
@@ -2037,8 +2057,19 @@ function expenseRowToLocal(row){
     category: row.category,
     payerIdx: memberIdIndex[row.payer_id],
     split: splitIdx,
-    cny: Number(row.base_amount_cny)
+    cny: Number(row.base_amount_cny),
+    date: row.expense_date || null,
+    time: row.expense_time || null,
+    excluded: !!row.excluded,
+    created_at: row.created_at || null
   };
+}
+// Only these count toward totals, averages, and the who-owes-who split
+// math — an expense marked "excluded" still shows in the list (so it
+// isn't silently lost / hard to find again) but is left out of every
+// calculation.
+function activeExpenses(){
+  return EXPENSES.filter(function(e){ return !e.excluded; });
 }
 async function fetchTripByCode(code){
   // Uses a server-side function (get_trip_by_code) instead of a direct
@@ -2173,7 +2204,7 @@ document.addEventListener('click', function(e){
 
 function computeBalances(){
   var net = MEMBERS.map(function(){ return 0; });
-  EXPENSES.forEach(function(e){
+  activeExpenses().forEach(function(e){
     var share = e.cny / e.split.length;
     net[e.payerIdx] += e.cny;
     e.split.forEach(function(idx){ net[idx] -= share; });
@@ -2318,14 +2349,14 @@ function renderHighlights(containerId){
 }
 
 function renderOverviewStats(totalId, avgId){
-  var total = EXPENSES.reduce(function(a,e){ return a+e.cny; }, 0);
+  var total = activeExpenses().reduce(function(a,e){ return a+e.cny; }, 0);
   var avg = Math.round(total / MEMBERS.length);
   document.getElementById(totalId).textContent = fmtAmt(total);
   document.getElementById(avgId).textContent = fmtAmt(avg);
 }
 
 function renderExpTotals(amtId, subId){
-  var total = EXPENSES.reduce(function(a,e){return a+e.cny;},0);
+  var total = activeExpenses().reduce(function(a,e){return a+e.cny;},0);
   document.getElementById(amtId).textContent = fmtAmt(total);
   var per = Math.round(total/MEMBERS.length);
   var baseNote = currentCurrency === 'CNY' ? '' : ('≈ ¥'+Math.round(total).toLocaleString()+' · ');
@@ -2355,6 +2386,20 @@ function renderCatFilter(containerId){
   sel.onchange = function(){ currentCategoryFilter = sel.value; renderAll(); };
 }
 
+// "18 พ.ย." / "Nov 18" — used as the day-group header in the expense
+// list, so items are visibly separated by the day they actually
+// happened (expense_date), not just the order they were typed in.
+function fmtExpenseDayLabel(dateStr){
+  var d = new Date(dateStr + 'T00:00:00');
+  if(isNaN(d)) return dateStr;
+  var monthsTh = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  var monthsEn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var dowTh = ['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+  var dowEn = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  return LANG === 'th'
+    ? (dowTh[d.getDay()] + ' ' + d.getDate() + ' ' + monthsTh[d.getMonth()])
+    : (dowEn[d.getDay()] + ', ' + monthsEn[d.getMonth()] + ' ' + d.getDate());
+}
 function renderExpList(containerId){
   var wrap = document.getElementById(containerId);
   wrap.innerHTML = '';
@@ -2365,25 +2410,71 @@ function renderExpList(containerId){
     wrap.innerHTML = '<p style="font-size:12px;color:var(--sub);margin:0;">'+(LANG==='th'?msgTh:msgEn)+'</p>';
     return;
   }
-  filtered.slice().reverse().forEach(function(e){
+  // Group by the day the expense actually happened (falls back to a
+  // single "no date" bucket at the end for older items saved before
+  // this field existed), most recent day first — and within a day,
+  // ordered by time so it's clear which one was logged before/after.
+  var withIdx = filtered.map(function(e, i){ return {e:e, i:i}; });
+  withIdx.sort(function(a, b){
+    var da = a.e.date || '', db = b.e.date || '';
+    if(da !== db){
+      if(!da) return 1;
+      if(!db) return -1;
+      return db.localeCompare(da);
+    }
+    var ta = a.e.time || '', tb = b.e.time || '';
+    if(ta !== tb){
+      if(!ta) return 1;
+      if(!tb) return -1;
+      return ta.localeCompare(tb);
+    }
+    return a.i - b.i;
+  });
+  var lastGroup = undefined;
+  withIdx.forEach(function(pair){
+    var e = pair.e;
+    var groupKey = e.date || '__nodate__';
+    if(groupKey !== lastGroup){
+      lastGroup = groupKey;
+      var head = document.createElement('div');
+      head.className = 'exp-day-head';
+      head.textContent = e.date ? fmtExpenseDayLabel(e.date) : (LANG==='th' ? 'ไม่ได้ระบุวันที่' : 'No date');
+      wrap.appendChild(head);
+    }
     var cat = getCategory(e.category);
     var payer = MEMBERS[e.payerIdx];
     var n = e.split.length;
-    var metaTh = payer.th + ' จ่ายก่อน · หาร ' + n + ' คน';
-    var metaEn = payer.en + ' paid · split ' + n + ' ways';
+    var timePart = e.time ? (e.time + ' · ') : '';
+    var metaTh = timePart + payer.th + ' จ่ายก่อน · หาร ' + n + ' คน';
+    var metaEn = timePart + payer.en + ' paid · split ' + n + ' ways';
     var row = document.createElement('div');
-    row.className = 'exp-row';
+    row.className = 'exp-row' + (e.excluded ? ' excluded' : '');
     row.innerHTML =
       '<div class="exp-icon icon-tile">'+ICON(cat.icon,17)+'</div>' +
       '<div class="exp-mid">' +
-        '<p class="exp-name">'+(LANG==='th'?e.name_th:e.name_en)+'</p>' +
+        '<p class="exp-name">'+(LANG==='th'?e.name_th:e.name_en)+(e.excluded ? ' <span class="exp-excluded-tag">'+(LANG==='th'?'ไม่นับรวม':'excluded')+'</span>' : '')+'</p>' +
         '<p class="exp-meta">'+(LANG==='th'?metaTh:metaEn)+'</p>' +
       '</div>' +
       '<div class="exp-amt">'+fmtAmt(e.cny)+'</div>' +
+      '<label class="exp-inc-toggle" title="'+(LANG==='th'?'รวมในยอด':'Include in totals')+'"><input type="checkbox" class="exp-inc-chk"'+(e.excluded?'':' checked')+'></label>' +
       '<button class="exp-del" title="delete">×</button>';
     row.querySelector('.exp-del').addEventListener('click', function(){ deleteExpense(e.id); });
+    row.querySelector('.exp-inc-chk').addEventListener('change', function(chk){
+      toggleExpenseExclude(e.id, !chk.target.checked);
+    });
     wrap.appendChild(row);
   });
+}
+async function toggleExpenseExclude(id, excluded){
+  if(sb && currentTrip){
+    await sb.from('expenses').update({excluded: excluded}).eq('id', id);
+    await refreshExpenses();
+    renderAll();
+    return;
+  }
+  var e = EXPENSES.find(function(x){ return x.id === id; });
+  if(e) e.excluded = excluded;
+  renderAll();
 }
 
 async function deleteExpense(id){
@@ -2401,7 +2492,7 @@ function renderCategoryBreakdown(containerId){
   var wrap = document.getElementById(containerId);
   wrap.innerHTML = '';
   var totals = {}, grand = 0;
-  EXPENSES.forEach(function(e){
+  activeExpenses().forEach(function(e){
     totals[e.category] = (totals[e.category] || 0) + e.cny;
     grand += e.cny;
   });
@@ -2457,6 +2548,10 @@ function openAddExpenseModal(){
   formSplitSet = new Set(MEMBERS.map(function(_,i){ return i; }));
   document.getElementById('f-name').value = '';
   document.getElementById('f-amount').value = '';
+  var now = new Date();
+  document.getElementById('f-date').value = now.toISOString().slice(0,10);
+  document.getElementById('f-time').value = now.toTimeString().slice(0,5);
+  document.getElementById('f-exclude').checked = false;
   renderCatChips();
   renderCurrChips();
   renderPayerPicks();
@@ -2526,6 +2621,9 @@ async function submitExpense(){
   var cnyAmount = fc.code === 'CNY' ? amountRaw : amountRaw / fc.rate;
   var payerMember = MEMBERS[formPayerIdx];
   var splitIds = Array.from(formSplitSet).map(function(i){ return MEMBERS[i] && MEMBERS[i].id; }).filter(Boolean);
+  var expDate = document.getElementById('f-date').value || null;
+  var expTime = document.getElementById('f-time').value || null;
+  var expExcluded = document.getElementById('f-exclude').checked;
 
   if(sb && currentTrip && payerMember && payerMember.id && splitIds.length === formSplitSet.size){
     var res = await sb.from('expenses').insert({
@@ -2536,7 +2634,10 @@ async function submitExpense(){
       split_member_ids: splitIds,
       entry_currency: formCurrency,
       entry_amount: amountRaw,
-      base_amount_cny: Math.round(cnyAmount)
+      base_amount_cny: Math.round(cnyAmount),
+      expense_date: expDate,
+      expense_time: expTime,
+      excluded: expExcluded
     });
     if(res.error){
       alert((LANG==='th' ? 'บันทึกไม่สำเร็จ: ' : 'Save failed: ') + res.error.message);
@@ -2552,7 +2653,10 @@ async function submitExpense(){
       category: formCategory,
       payerIdx: formPayerIdx,
       split: Array.from(formSplitSet),
-      cny: Math.round(cnyAmount)
+      cny: Math.round(cnyAmount),
+      date: expDate,
+      time: expTime,
+      excluded: expExcluded
     });
   }
   closeAddExpenseModal();
@@ -2868,7 +2972,7 @@ function renderShareCardPreview(){
   var day3 = DAYS[3];
   card.style.background = day3.grad;
 
-  var total = EXPENSES.reduce(function(a,e){ return a + e.cny; }, 0);
+  var total = activeExpenses().reduce(function(a,e){ return a + e.cny; }, 0);
   var statsHtml = document.getElementById('share-chk-stats').checked
     ? '<div class="sc-stats">' +
         '<div class="sc-stat"><b>' + fmtAmt(total) + '</b><span>' + (LANG==='th'?'ใช้จ่ายรวม':'Total spent') + '</span></div>' +
@@ -3133,29 +3237,33 @@ function renderLandingSplash(){
   var el = document.getElementById('landingSplash');
   if(!el) return;
 
-  var t = tripData();
-  var days = tripDurationDays(t);
+  // This splash is a generic "here's what the app can do" pitch, shown
+  // before anyone has picked a trip — it should read like marketing copy
+  // for the product, not like a page about one specific real trip. So
+  // the exact date range / traveler count (which pin it to one real,
+  // identifiable trip) are deliberately left out; the only live number
+  // kept is a generic day-countdown, since that's a feature idea
+  // ("count down to your trip") rather than a personal detail.
   var now = new Date();
   var diffDays = Math.ceil((TRIP_START - now) / 86400000);
   var badges = [];
-  badges.push('<span class="ls-badge accent">' + fmtLandingDateRange(t).toUpperCase() + '</span>');
-  badges.push('<span class="ls-badge">' + MEMBERS.length + ' TRAVELERS</span>');
-  if(days) badges.push('<span class="ls-badge">' + days + ' DAYS</span>');
   if(diffDays > 0) badges.push('<span class="ls-badge teal">' + diffDays + ' DAYS TO GO</span>');
   else if(now >= TRIP_START && now <= TRIP_END) badges.push('<span class="ls-badge teal">TRIP IN PROGRESS</span>');
+  else badges.push('<span class="ls-badge teal">COUNTDOWN TO YOUR TRIP</span>');
+  badges.push('<span class="ls-badge accent">ITINERARY</span>');
+  badges.push('<span class="ls-badge">EXPENSES</span>');
+  badges.push('<span class="ls-badge">LIVE MAP</span>');
   document.getElementById('ls-badges').innerHTML = badges.join('');
 
-  var name = t.name_en || t.name_th || 'your trip';
   document.getElementById('ls-sub').textContent =
-    'Itinerary, expenses, member profiles, and live maps for ' + name + ' — all in one place, updated instantly for everyone.';
+    'Itinerary, expenses, member profiles, and live maps — all in one place, updated instantly for everyone.';
 
   var avEl = document.getElementById('ls-avatars');
-  var previewColors = ['#6c5ce7','#00b894','#e08a1e','#0984e3'];
-  var dotsHtml = previewColors.slice(0, Math.min(4, MEMBERS.length || 4)).map(function(c){
-    return '<div class="ls-dot" style="background:'+c+';"></div>';
+  var seeds = [1,2,3,4];
+  var dotsHtml = seeds.map(function(s){
+    return '<img class="ls-dot" src="'+catAvatarUri(s)+'" alt="">';
   }).join('');
-  var remaining = Math.max(0, MEMBERS.length - 4);
-  avEl.innerHTML = dotsHtml + (MEMBERS.length ? '<span>' + (remaining > 0 ? '+' + remaining + ' more already in' : 'already in') + '</span>' : '');
+  avEl.innerHTML = dotsHtml + '<span>already in</span>';
 
   var featEl = document.getElementById('ls-features');
   featEl.innerHTML = LS_FEATURES.map(function(f, i){
