@@ -181,6 +181,29 @@
   .day-chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px;}
   .day-chip{flex:none;padding:8px 16px;border-radius:20px;font-size:13px;font-weight:700;background:#f1f0fe;color:var(--accent1);border:none;cursor:pointer;white-space:nowrap;}
   .day-chip.active{background:var(--accent1);color:#fff;}
+  .day-chip{display:flex;flex-direction:column;align-items:center;line-height:1.2;border-radius:14px;padding:7px 14px;}
+  .day-chip .dc-date{font-size:10.5px;font-weight:600;opacity:.75;margin-top:1px;}
+  .day-chip.overview-chip{background:#101828;color:#fff;flex-direction:row;gap:6px;align-items:center;}
+  .po-row{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line);}
+  .po-row:first-child{border-top:none;}
+  .po-side{display:flex;flex-direction:column;gap:6px;}
+  .po-daynum{font-size:12px;font-weight:800;color:var(--accent1);}
+  .po-date{font-size:13px;font-weight:800;}
+  .po-title{font-size:12.5px;font-weight:700;line-height:1.35;}
+  .po-temp{font-size:11px;color:var(--sub);line-height:1.4;}
+  .po-hero{height:78px;border-radius:10px;background-size:cover;background-position:center;background-color:#e4e7ee;}
+  .po-stops{display:flex;flex-direction:column;gap:5px;}
+  .po-stop{display:flex;gap:10px;font-size:12.5px;line-height:1.4;}
+  .po-time{flex:none;width:96px;color:var(--sub);font-weight:600;font-size:11.5px;}
+  .po-name{flex:1;min-width:0;word-break:break-word;}
+  .po-photos{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;}
+  .po-photo{width:64px;height:64px;border-radius:8px;background-size:cover;background-position:center;}
+  @media (max-width:640px){
+    .po-row{grid-template-columns:1fr;}
+    .po-time{width:80px;}
+  }
+  .day-hero-pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
+  .day-hero-pills .day-hero-tag{margin-bottom:0;}
 
   .day-hero{position:relative;min-height:120px;border-radius:16px;overflow:hidden;margin-bottom:16px;display:flex;align-items:flex-end;padding:16px;color:#fff;}
   .day-hero-icon{position:absolute;right:-10px;top:-10px;opacity:.32;pointer-events:none;}
@@ -1319,6 +1342,16 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="planOverviewModal">
+  <div class="modal-box" style="max-width:980px;width:96%;max-height:90vh;overflow-y:auto;">
+    <p class="modal-title i18n" data-th="ตารางแผนรวมทุกวัน" data-en="Full plan overview">ตารางแผนรวมทุกวัน</p>
+    <div id="plan-overview-content"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closePlanOverview()"><span class="i18n" data-th="ปิด" data-en="Close">ปิด</span></button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="yearlyTripsModal">
   <div class="modal-box" style="max-width:480px;max-height:80vh;overflow-y:auto;">
     <p class="modal-title i18n" data-th="สรุปทริปทั้งหมด" data-en="All trips overview">สรุปทริปทั้งหมด</p>
@@ -1434,7 +1467,8 @@ var DAYS = {
     grad:"linear-gradient(135deg,#6b4f2a,#b98b3e)",
     tag_th:"ไฮไลท์วันนี้", tag_en:"Today's highlight",
     title_th:"ศูนย์แพนด้า & วัดต้าฉือ", title_en:"Panda Base & Daci Temple",
-    sub_th:"18 พ.ย. · เฉิงตู 8–16°C อากาศเย็นชื้น ท้องฟ้าครึ้ม", sub_en:"Nov 18 · Chengdu 8–16°C, cool, damp and overcast",
+    sub_th:"บินข้ามคืน · แพนด้า · วัดต้าฉือ · สะพานอันชุนยามค่ำ", sub_en:"Overnight flight · pandas · Daci Temple · Anshun Bridge at night",
+    temp_th:"เฉิงตู 8–16°C เย็นชื้น ครึ้ม", temp_en:"Chengdu 8–16°C, cool, damp, overcast",
     caption_th:"เฉิงตู — วันที่ 1", caption_en:"Chengdu — Day 1",
     stops:[
       S("17 พ.ย. 22:00","ถึงสนามบินสุวรรณภูมิ Check-in เคาน์เตอร์ N","Arrive Suvarnabhumi, check in at counter N","เตรียมเอกสารและกระเป๋าให้พร้อม","Get documents and bags ready",null,"next"),
@@ -1457,7 +1491,8 @@ var DAYS = {
     grad:"linear-gradient(135deg,#37474f,#607d8b)",
     tag_th:"ไฮไลท์วันนี้", tag_en:"Today's highlight",
     title_th:"มุ่งหน้าสู่จิ่วจ้ายโกว", title_en:"Journey to Jiuzhaigou",
-    sub_th:"19 พ.ย. · รถไฟความเร็วสูง + รถต่อ · จิ่วจ้ายโกว -2–8°C หนาวจัด", sub_en:"Nov 19 · High-speed rail + transfers · Jiuzhaigou -2–8°C, very cold",
+    sub_th:"รถไฟความเร็วสูง + รถต่อไปจิ่วจ้ายโกว", sub_en:"High-speed rail + transfers to Jiuzhaigou",
+    temp_th:"เฉิงตู 8–16°C → จิ่วจ้ายโกว -2–8°C", temp_en:"Chengdu 8–16°C → Jiuzhaigou -2–8°C",
     caption_th:"เฉิงตู → จิ่วจ้ายโกว — วันที่ 2", caption_en:"Chengdu → Jiuzhaigou — Day 2",
     stops:[
       S("07:00","อาหารเช้าที่โรงแรม","Breakfast at the hotel","","",null),
@@ -1477,7 +1512,8 @@ var DAYS = {
     grad:"linear-gradient(135deg,#00695c,#26a69a)",
     tag_th:"ไฮไลท์ของทริป", tag_en:"Trip highlight",
     title_th:"อุทยานแห่งชาติจิ่วจ้ายโกว", title_en:"Jiuzhaigou National Park",
-    sub_th:"20 พ.ย. · เที่ยวเต็มวัน แล้วนั่งรถไฟกลับเฉิงตูตอนค่ำ · หนาวจัด ลมแรง", sub_en:"Nov 20 · Full day in the park, train back to Chengdu at night · very cold, windy",
+    sub_th:"เที่ยวเต็มวัน แล้วนั่งรถไฟกลับเฉิงตูตอนค่ำ", sub_en:"Full day in the park, train back to Chengdu at night",
+    temp_th:"จิ่วจ้ายโกว -2–8°C หนาวจัด ลมแรง", temp_en:"Jiuzhaigou -2–8°C, very cold and windy",
     caption_th:"จิ่วจ้ายโกว → เฉิงตู — วันที่ 3", caption_en:"Jiuzhaigou → Chengdu — Day 3",
     stops:[
       S("07:30","อาหารเช้าที่โรงแรม พร้อมเช็คเอาท์และฝากกระเป๋า","Breakfast, check out, leave bags","","",null),
@@ -1496,7 +1532,8 @@ var DAYS = {
     grad:"linear-gradient(135deg,#0d4f6b,#3a8fb7)",
     tag_th:"ไฮไลท์วันนี้", tag_en:"Today's highlight",
     title_th:"ตงเจียวจี้อี้ · แพนด้าเซลฟี่ · ตึกแฝด", title_en:"Dongjiao Jiyi, Selfie Panda & Twin Towers",
-    sub_th:"21 พ.ย. · ถ่ายรูป ช้อปปิ้ง เมืองโบราณกวนเซียน และไฟยามค่ำคืน", sub_en:"Nov 21 · Photos, shopping, Guanxian old town and night lights",
+    sub_th:"ถ่ายรูป ช้อปปิ้ง เมืองโบราณกวนเซียน และไฟยามค่ำคืน", sub_en:"Photos, shopping, Guanxian old town and night lights",
+    temp_th:"เฉิงตู 8–16°C เย็นชื้น", temp_en:"Chengdu 8–16°C, cool and damp",
     caption_th:"เฉิงตู — วันที่ 4", caption_en:"Chengdu — Day 4",
     stops:[
       S("07:00–10:00","มื้อเช้าที่โรงแรม","Breakfast at the hotel","","",null),
@@ -1517,7 +1554,8 @@ var DAYS = {
     grad:"linear-gradient(135deg,#5c4033,#a67856)",
     tag_th:"ไฮไลท์วันนี้", tag_en:"Today's highlight",
     title_th:"ซอยกว้างแคบ & ลาก่อนเฉิงตู", title_en:"Kuanzhai Alley & Farewell, Chengdu",
-    sub_th:"22 พ.ย. · ช้อปของฝาก แล้วเดินทางกลับ", sub_en:"Nov 22 · Souvenir shopping, then fly home",
+    sub_th:"ช้อปของฝาก แล้วเดินทางกลับ", sub_en:"Souvenir shopping, then fly home",
+    temp_th:"เฉิงตู 8–16°C เย็นชื้น", temp_en:"Chengdu 8–16°C, cool and damp",
     caption_th:"เฉิงตู → กรุงเทพฯ — วันที่ 5", caption_en:"Chengdu → Bangkok — Day 5",
     stops:[
       S("09:00","มื้อเช้าที่โรงแรม","Breakfast at the hotel","","",null),
@@ -2201,6 +2239,8 @@ async function fetchItineraryDays(tripId){
         sub_en: meta.sub_en != null ? meta.sub_en : (existing.sub_en || ''),
         caption_th: meta.caption_th || existing.caption_th || ('วันที่ ' + row.day_number),
         caption_en: meta.caption_en || existing.caption_en || ('Day ' + row.day_number),
+        temp_th: meta.temp_th != null ? meta.temp_th : (existing.temp_th || ''),
+        temp_en: meta.temp_en != null ? meta.temp_en : (existing.temp_en || ''),
         hero_photo: meta.hero_photo != null ? meta.hero_photo : (existing.hero_photo || null),
         stops: Array.isArray(row.stops) && row.stops.length ? row.stops : (existing.stops || [])
       };
@@ -2306,16 +2346,78 @@ function applyLang(){
   });
 }
 
+function dayDateObj(d){
+  var b = TRIP_START;
+  return new Date(b.getFullYear(), b.getMonth(), b.getDate() + d - 1);
+}
+function fmtDayShort(d){
+  var dt = dayDateObj(d);
+  var mTh = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  var mEn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return LANG === 'th' ? (dt.getDate() + ' ' + mTh[dt.getMonth()]) : (mEn[dt.getMonth()] + ' ' + dt.getDate());
+}
+function fmtDayLong(d){
+  var dt = dayDateObj(d);
+  var dTh = ['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัสบดี','ศุกร์','เสาร์'];
+  var dEn = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  var mTh = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  var mEn = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return LANG === 'th'
+    ? ('วัน' + dTh[dt.getDay()] + ' ' + dt.getDate() + ' ' + mTh[dt.getMonth()] + ' ' + dt.getFullYear())
+    : (dEn[dt.getDay()] + ', ' + mEn[dt.getMonth()] + ' ' + dt.getDate() + ', ' + dt.getFullYear());
+}
+function planPhotoFor(d, i, stop){
+  if(stop.photo) return stop.photo;
+  var arr = STOP_PHOTOS[d] || [];
+  return arr[i] || null;
+}
+function openPlanOverview(){
+  var th = LANG === 'th';
+  var html = '';
+  Object.keys(DAYS).map(Number).sort(function(a,b){return a-b;}).forEach(function(d){
+    var day = DAYS[d];
+    var hero = (day.hero_photo !== undefined && day.hero_photo !== null && day.hero_photo !== '') ? day.hero_photo : DAY_HERO_PHOTO[d];
+    var heroStyle = hero ? ('background-image:url(\''+hero+'\')') : ('background:'+day.grad);
+    var temp = th ? day.temp_th : day.temp_en;
+    var photos = [];
+    var stopsHtml = (day.stops || []).map(function(s, i){
+      var ph = planPhotoFor(d, i, s);
+      if(ph) photos.push(ph);
+      return '<div class="po-stop"><span class="po-time">'+(th?s.time_th:s.time_en)+'</span><span class="po-name">'+(th?s.title_th:s.title_en)+'</span></div>';
+    }).join('');
+    var photosHtml = photos.length ? '<div class="po-photos">'+photos.map(function(ph){ return '<div class="po-photo" style="background-image:url(\''+ph+'\')"></div>'; }).join('')+'</div>' : '';
+    html += '<div class="po-row">' +
+      '<div class="po-side">' +
+        '<div class="po-daynum">Day '+d+'</div>' +
+        '<div class="po-date">'+fmtDayLong(d)+'</div>' +
+        '<div class="po-hero" style="'+heroStyle+'"></div>' +
+        '<div class="po-title">'+(th?day.title_th:day.title_en)+'</div>' +
+        (temp ? '<div class="po-temp">'+temp+'</div>' : '') +
+      '</div>' +
+      '<div><div class="po-stops">'+stopsHtml+'</div>'+photosHtml+'</div>' +
+    '</div>';
+  });
+  document.getElementById('plan-overview-content').innerHTML = html;
+  document.getElementById('planOverviewModal').classList.add('open');
+}
+function closePlanOverview(){
+  document.getElementById('planOverviewModal').classList.remove('open');
+}
 function renderDayChips(containerId, captionId){
   var wrap = document.getElementById(containerId);
   wrap.innerHTML = '';
   [1,2,3,4,5].forEach(function(d){
     var b = document.createElement('button');
     b.className = 'day-chip' + (d === currentDay ? ' active' : '');
-    b.textContent = 'Day ' + d;
+    b.innerHTML = '<span class="dc-day">Day ' + d + '</span><span class="dc-date">' + fmtDayShort(d) + '</span>';
     b.addEventListener('click', function(){ currentDay = d; renderAll(); });
     wrap.appendChild(b);
   });
+  var ob = document.createElement('button');
+  ob.className = 'day-chip overview-chip';
+  ob.innerHTML = ICON('calendar',13) + '<span class="dc-day">' + (LANG === 'th' ? 'ตารางรวม' : 'All days') + '</span>';
+  ob.addEventListener('click', openPlanOverview);
+  wrap.appendChild(ob);
   var cap = document.getElementById(captionId);
   if(cap){ var d0 = DAYS[currentDay] || DAYS[1]; cap.textContent = LANG === 'th' ? d0.caption_th : d0.caption_en; }
 }
@@ -2334,7 +2436,9 @@ function renderDayHero(containerId){
   el.innerHTML =
     '<div class="day-hero" style="'+bg+'">' +
       '<div>' +
-        '<span class="day-hero-tag">'+(LANG==='th'?day.tag_th:day.tag_en)+'</span>' +
+        '<div class="day-hero-pills"><span class="day-hero-tag">'+(LANG==='th'?day.tag_th:day.tag_en)+'</span>' +
+          '<span class="day-hero-tag">'+ICON('calendar',10)+' '+fmtDayLong(currentDay)+'</span>' +
+          ((LANG==='th'?day.temp_th:day.temp_en) ? '<span class="day-hero-tag">'+(LANG==='th'?day.temp_th:day.temp_en)+'</span>' : '') + '</div>' +
         '<p class="day-hero-title">'+(LANG==='th'?day.title_th:day.title_en)+'</p>' +
         '<p class="day-hero-sub">'+(LANG==='th'?day.sub_th:day.sub_en)+'</p>' +
       '</div>' +
@@ -3496,6 +3600,7 @@ function openItineraryEditModal(){
   ieDayMeta = {
     tag_th: day.tag_th, tag_en: day.tag_en, grad: day.grad,
     caption_th: day.caption_th, caption_en: day.caption_en,
+    temp_th: day.temp_th || '', temp_en: day.temp_en || '',
     hero_photo: (day.hero_photo !== undefined && day.hero_photo !== null) ? day.hero_photo : (DAY_HERO_PHOTO[currentDay] || '')
   };
   renderIeHeroPhoto();
@@ -3693,6 +3798,7 @@ document.getElementById('ie-save-btn').addEventListener('click', async function(
     sub_th: document.getElementById('ie-sub-th').value.trim(),
     sub_en: document.getElementById('ie-sub-en').value.trim(),
     caption_th: ieDayMeta.caption_th, caption_en: ieDayMeta.caption_en,
+    temp_th: ieDayMeta.temp_th || '', temp_en: ieDayMeta.temp_en || '',
     hero_photo: ieDayMeta.hero_photo || null,
     stops: ieStops
   };
@@ -3708,6 +3814,7 @@ document.getElementById('ie-save-btn').addEventListener('click', async function(
           tag_th: dayObj.tag_th, tag_en: dayObj.tag_en,
           sub_th: dayObj.sub_th, sub_en: dayObj.sub_en,
           grad: dayObj.grad, caption_th: dayObj.caption_th, caption_en: dayObj.caption_en,
+          temp_th: dayObj.temp_th, temp_en: dayObj.temp_en,
           hero_photo: dayObj.hero_photo
         }
       }, {onConflict: 'trip_id,day_number'});
