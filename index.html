@@ -844,6 +844,7 @@
         <div class="m-section" data-section="map">
           <p class="main-title i18n" data-th="เส้นทางเดินทาง" data-en="Route map" style="font-size:17px;margin:6px 0 2px;">เส้นทางเดินทาง</p>
           <p class="main-sub" style="margin:0 0 14px;"><span id="m-map-day-sub">Day 1 · เฉิงตู</span></p>
+          <div class="day-chips" id="m-map-chips"></div>
           <div class="panel" style="margin-bottom:16px;">
             <div class="map-canvas" style="margin-bottom:6px;padding:0;">
               <iframe id="m-map-frame" class="real-map-frame" loading="lazy" title="Trip map"></iframe>
@@ -1068,6 +1069,7 @@
                 <p class="main-sub"><span id="d-map-day-sub">Day 1 · เฉิงตู</span></p>
               </div>
             </div>
+            <div class="day-chips" id="d-map-chips"></div>
             <div class="two-col" style="grid-template-columns:1.6fr 1fr;">
               <div class="panel">
                 <div class="map-canvas" style="height:340px;padding:0;">
@@ -3962,6 +3964,8 @@ function renderAll(){
   if(ovHero) ovHero.style.cssText += heroPhotoStyle(TRIP_HERO_PHOTO) + 'min-height:100px;';
   renderDayChips('m-day-chips','m-day-caption');
   renderDayChips('d-day-chips','d-day-caption');
+  renderDayChips('m-map-chips','m-map-chips-cap');
+  renderDayChips('d-map-chips','d-map-chips-cap');
   renderDayHero('m-day-hero');
   renderDayHero('d-day-hero');
   renderTimeline('m-timeline');
