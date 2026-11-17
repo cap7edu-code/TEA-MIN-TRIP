@@ -431,6 +431,37 @@
   .nav-btn .ic{display:flex;justify-content:center;}
   .ic-inline{display:inline-flex;vertical-align:-3px;}
   .done-badge{display:inline-flex;align-items:center;gap:6px;background:#f1f2f6;color:var(--ink);font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;}
+  .sum-hero{position:relative;border-radius:20px;overflow:hidden;min-height:190px;color:#fff;display:flex;align-items:flex-end;padding:20px 22px;background-size:cover;background-position:center;background-color:#12142b;margin-bottom:14px;}
+  .sum-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(18,20,43,0.15) 0%,rgba(18,20,43,0.82) 100%);}
+  .sum-hero-in{position:relative;width:100%;display:flex;flex-direction:column;gap:6px;}
+  .sum-badge{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border-radius:20px;padding:5px 11px;font-size:11px;font-weight:700;}
+  .sum-title{font-size:26px;font-weight:800;line-height:1.2;margin:2px 0 0;text-shadow:0 2px 14px rgba(0,0,0,0.4);}
+  .sum-sub{font-size:13px;opacity:.9;margin:0;}
+  .sum-pills{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px;}
+  .sum-pill{background:rgba(255,255,255,0.16);border-radius:10px;padding:4px 10px;font-size:11px;font-weight:600;}
+  .sum-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:22px;}
+  .sum-stat{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 16px;display:flex;align-items:center;gap:12px;min-width:0;}
+  .sum-stat-ic{flex:none;width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;}
+  .sum-stat-body{min-width:0;}
+  .sum-stat-lbl{font-size:11px;color:var(--sub);font-weight:600;margin:0;}
+  .sum-stat-val{font-size:20px;font-weight:800;margin:1px 0 0;white-space:nowrap;}
+  .hl-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;}
+  .hl-card{position:relative;border-radius:16px;overflow:hidden;aspect-ratio:3/4;background-size:cover;background-position:center;color:#fff;display:flex;align-items:flex-end;padding:12px;}
+  .hl-card::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,12,28,0) 35%,rgba(10,12,28,0.88) 100%);}
+  .hl-card-in{position:relative;width:100%;}
+  .hl-day{display:inline-block;background:rgba(255,255,255,0.22);border-radius:8px;padding:2px 8px;font-size:10px;font-weight:800;margin-bottom:6px;}
+  .hl-title{font-size:12.5px;font-weight:800;line-height:1.3;margin:0;word-break:break-word;}
+  .hl-sub{font-size:10.5px;opacity:.8;margin:3px 0 0;}
+  @media (max-width: 899px){
+    .sum-hero{min-height:170px;padding:16px;border-radius:18px;}
+    .sum-title{font-size:21px;}
+    .sum-stats{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:18px;}
+    .sum-stat{padding:12px;gap:10px;}
+    .sum-stat-ic{width:34px;height:34px;}
+    .sum-stat-val{font-size:17px;}
+    .hl-grid{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;padding-bottom:6px;-webkit-overflow-scrolling:touch;}
+    .hl-card{flex:none;width:44%;scroll-snap-align:start;}
+  }
   .highlight-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;}
   .highlight-card{border-radius:14px;overflow:hidden;position:relative;min-height:96px;display:flex;align-items:flex-end;padding:10px;color:#fff;}
   .highlight-card .hc-t{font-size:11px;font-weight:700;margin:0;word-break:break-word;}
@@ -861,21 +892,11 @@
         </div>
 
         <div class="m-section" data-section="summary">
-          <div class="section-head">
-            <p class="main-title i18n" data-th="สรุปทริป" data-en="Trip summary" style="font-size:17px;margin:0;">สรุปทริป</p>
-            <span class="done-badge"><span class="ic-inline" data-icon="flag"></span> <span class="i18n" data-th="ทริปเสร็จสมบูรณ์" data-en="Trip completed">ทริปเสร็จสมบูรณ์</span></span>
-          </div>
-          <p class="main-sub" style="margin:0 0 16px;"><span class="i18n" data-th="18–22 พ.ย. · เฉิงตู → จิ่วจ้ายโกว → เฉิงตู" data-en="Nov 18–22 · Chengdu → Jiuzhaigou → Chengdu">18–22 พ.ย. · เฉิงตู → จิ่วจ้ายโกว → เฉิงตู</span></p>
-
-          <div class="stat-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:16px;">
-            <div class="stat-card"><p class="lbl i18n" data-th="ใช้จ่ายรวม" data-en="Total spent">ใช้จ่ายรวม</p><p class="val" id="m-sum-total">¥0</p></div>
-            <div class="stat-card"><p class="lbl i18n" data-th="เฉลี่ย/คน" data-en="Avg / person">เฉลี่ย/คน</p><p class="val" id="m-sum-avg">¥0</p></div>
-            <div class="stat-card"><p class="lbl i18n" data-th="จุดที่ไปแล้ว" data-en="Stops visited">จุดที่ไปแล้ว</p><p class="val" style="font-size:18px;">5 / 22</p></div>
-            <div class="stat-card"><p class="lbl i18n" data-th="ระยะเวลา" data-en="Duration">ระยะเวลา</p><p class="val" style="font-size:18px;">8 <span class="i18n" data-th="วัน" data-en="days">วัน</span></p></div>
-          </div>
+          <div class="sum-hero" id="m-sum-hero"></div>
+          <div class="sum-stats" id="m-sum-stats"></div>
 
           <div class="panel-title"><span class="i18n" data-th="ไฮไลท์ของทริป" data-en="Trip highlights">ไฮไลท์ของทริป</span></div>
-          <div class="highlight-grid" id="m-highlights" style="margin-bottom:16px;"></div>
+          <div class="hl-grid" id="m-highlights" style="margin-bottom:18px;"></div>
 
           <div class="panel-title"><span class="i18n" data-th="แยกตามหมวดหมู่" data-en="By category">แยกตามหมวดหมู่</span></div>
           <div class="panel" style="margin-bottom:16px;" id="m-sum-cat"></div>
@@ -1088,23 +1109,11 @@
           </div>
 
           <div class="d-section" data-section="summary">
-            <div class="main-topbar">
-              <div>
-                <p class="main-title i18n" data-th="สรุปทริป" data-en="Trip summary">สรุปทริป</p>
-                <p class="main-sub i18n" data-th="18–22 พ.ย. · เฉิงตู → จิ่วจ้ายโกว → เฉิงตู" data-en="Nov 18–22 · Chengdu → Jiuzhaigou → Chengdu">18–22 พ.ย. · เฉิงตู → จิ่วจ้ายโกว → เฉิงตู</p>
-              </div>
-              <span class="done-badge"><span class="ic-inline" data-icon="flag"></span> <span class="i18n" data-th="ทริปเสร็จสมบูรณ์" data-en="Trip completed">ทริปเสร็จสมบูรณ์</span></span>
-            </div>
-
-            <div class="stat-grid">
-              <div class="stat-card"><p class="lbl i18n" data-th="ใช้จ่ายรวม" data-en="Total spent">ใช้จ่ายรวม</p><p class="val" id="d-sum-total">¥0</p></div>
-              <div class="stat-card"><p class="lbl i18n" data-th="เฉลี่ย/คน" data-en="Avg / person">เฉลี่ย/คน</p><p class="val" id="d-sum-avg">¥0</p></div>
-              <div class="stat-card"><p class="lbl i18n" data-th="จุดที่ไปแล้ว" data-en="Stops visited">จุดที่ไปแล้ว</p><p class="val">5 / 22</p></div>
-              <div class="stat-card"><p class="lbl i18n" data-th="ระยะเวลา" data-en="Duration">ระยะเวลา</p><p class="val">8 <span class="i18n" data-th="วัน" data-en="days">วัน</span></p></div>
-            </div>
+            <div class="sum-hero" id="d-sum-hero"></div>
+            <div class="sum-stats" id="d-sum-stats"></div>
 
             <div class="panel-title"><span class="i18n" data-th="ไฮไลท์ของทริป" data-en="Trip highlights">ไฮไลท์ของทริป</span></div>
-            <div class="highlight-grid" id="d-highlights" style="margin-bottom:20px;"></div>
+            <div class="hl-grid" id="d-highlights" style="margin-bottom:22px;"></div>
 
             <div class="two-col">
               <div class="panel">
@@ -1580,7 +1589,7 @@ var DAYS = {
 };
 
 var AMAP_KW = {
-  1: [null,null,'成都天府国际机场','成都春熙路','成都国际金融中心IFS','成都太古里春熙路地铁站亚朵X酒店','成都大熊猫繁育研究基地','成都大熊猫繁育研究基地','成都国际金融中心IFS','大慈寺','成都太古里春熙路地铁站亚朵X酒店',null,'安顺廊桥','成都太古里春熙路地铁站亚朵X酒店'],
+  1: [null,null,'成都天府国际机场','成都春熙路','成都国际金融中心IFS','成都大熊猫繁育研究基地','成都大熊猫繁育研究基地','成都国际金融中心IFS','成都国际金融中心IFS','大慈寺','成都太古里春熙路地铁站亚朵X酒店',null,'安顺廊桥','成都太古里春熙路地铁站亚朵X酒店'],
   2: [null,'成都太古里春熙路地铁站亚朵X酒店',null,'成都东站','成都东站','成都东站','黄龙九寨站','黄龙九寨站','九寨沟 SANJNGY Serene Realm Hotel','九寨沟 SANJNGY Serene Realm Hotel',null],
   3: ['九寨沟 SANJNGY Serene Realm Hotel','九寨沟风景名胜区',null,'九寨沟 SANJNGY Serene Realm Hotel','黄龙九寨站','黄龙九寨站','黄龙九寨站','黄龙九寨站','黄龙九寨站','成都东站'],
   4: [null,'东郊记忆',null,'仰天窝广场','仰天窝广场','灌县古城',null,'灌县古城','交子之环','交子之环','成都SKP',null],
@@ -2543,18 +2552,59 @@ function fmtAmt(cny){
   return c.symbol + Math.round(cny * c.rate).toLocaleString();
 }
 
+function dayPhotoFor(dNum){
+  var day = DAYS[dNum] || {};
+  return (day.hero_photo !== undefined && day.hero_photo !== null && day.hero_photo !== '') ? day.hero_photo : DAY_HERO_PHOTO[dNum];
+}
 function renderHighlights(containerId){
   var wrap = document.getElementById(containerId);
-  wrap.innerHTML = '';
-  Object.keys(DAYS).map(Number).sort(function(a,b){return a-b;}).forEach(function(dNum){
+  if(!wrap) return;
+  var th = LANG === 'th';
+  wrap.innerHTML = Object.keys(DAYS).map(Number).sort(function(a,b){return a-b;}).map(function(dNum){
     var day = DAYS[dNum];
-    var card = document.createElement('div');
-    card.className = 'highlight-card';
-    card.style.background = day.grad;
-    card.innerHTML =
-      '<div><p class="hc-t">'+(LANG==='th'?day.title_th:day.title_en)+'</p><p class="hc-s">Day '+dNum+'</p></div>';
-    wrap.appendChild(card);
-  });
+    var photo = dayPhotoFor(dNum);
+    var bg = photo ? ('background-image:url(\''+photo+'\')') : ('background:'+day.grad);
+    return '<div class="hl-card" style="'+bg+'"><div class="hl-card-in">' +
+      '<span class="hl-day">Day '+dNum+' · '+fmtDayShort(dNum)+'</span>' +
+      '<p class="hl-title">'+(th?day.title_th:day.title_en)+'</p>' +
+      '<p class="hl-sub">'+(day.stops||[]).length+' '+(th?'รายการ':'stops')+'</p>' +
+    '</div></div>';
+  }).join('');
+}
+function renderSummaryHero(prefix){
+  var hero = document.getElementById(prefix+'-sum-hero');
+  var stats = document.getElementById(prefix+'-sum-stats');
+  if(!hero || !stats) return;
+  var th = LANG === 'th';
+  var t = tripData();
+  var nDays = Object.keys(DAYS).length;
+  var name = th ? t.name_th : t.name_en;
+  var now = new Date();
+  var diff = Math.ceil((TRIP_START - now) / 86400000);
+  var badge = diff > 0 ? (th ? ('อีก '+diff+' วันออกเดินทาง') : (diff+(diff===1?' day':' days')+' to go'))
+    : (now <= TRIP_END ? (th ? 'กำลังเดินทาง' : 'Trip in progress') : (th ? 'ทริปเสร็จสมบูรณ์' : 'Trip completed'));
+  var range = fmtDayShort(1) + ' – ' + fmtDayShort(nDays) + ' ' + (th ? (dayDateObj(nDays).getFullYear()+543) : dayDateObj(nDays).getFullYear());
+  hero.style.cssText = heroPhotoStyle(TRIP_HERO_PHOTO).replace('rgba(30,20,70,0.55)','rgba(30,20,70,0.05)').replace('rgba(20,15,50,0.35)','rgba(20,15,50,0.05)');
+  hero.innerHTML = '<div class="sum-hero-in">' +
+    '<span class="sum-badge">'+ICON('flag',12)+' '+badge+'</span>' +
+    '<p class="sum-title">'+name+'</p>' +
+    '<p class="sum-sub">'+range+'</p>' +
+    '<div class="sum-pills"><span class="sum-pill">'+nDays+' '+(th?'วัน':'days')+'</span><span class="sum-pill">'+MEMBERS.length+' '+(th?'คน':'travelers')+'</span></div>' +
+  '</div>';
+  var total = activeExpenses().reduce(function(a,e){ return a+e.cny; }, 0);
+  var avg = MEMBERS.length ? Math.round(total / MEMBERS.length) : 0;
+  var allStops = 0, doneStops = 0;
+  Object.keys(DAYS).forEach(function(k){ (DAYS[k].stops||[]).forEach(function(s){ allStops++; if(s.status === 'done') doneStops++; }); });
+  var cards = [
+    {icon:'wallet', color:'#6c5ce7', bg:'#f1f0fe', lbl: th?'ใช้จ่ายรวม':'Total spent', val: fmtAmt(total)},
+    {icon:'users', color:'#00a383', bg:'#e6f7f2', lbl: th?'เฉลี่ย/คน':'Avg / person', val: fmtAmt(avg)},
+    {icon:'pin', color:'#e08a1e', bg:'#fdf3e3', lbl: th?'จุดที่ไปแล้ว':'Stops visited', val: doneStops+' / '+allStops},
+    {icon:'calendar', color:'#e85d75', bg:'#fdecf0', lbl: th?'ระยะเวลา':'Duration', val: nDays+' '+(th?'วัน':'days')}
+  ];
+  stats.innerHTML = cards.map(function(c){
+    return '<div class="sum-stat"><span class="sum-stat-ic" style="background:'+c.bg+';color:'+c.color+';">'+ICON(c.icon,18)+'</span>' +
+      '<div class="sum-stat-body"><p class="sum-stat-lbl">'+c.lbl+'</p><p class="sum-stat-val">'+c.val+'</p></div></div>';
+  }).join('');
 }
 
 function renderOverviewStats(totalId, avgId){
@@ -3990,10 +4040,10 @@ function renderAll(){
   renderTripEssentials('m-trip-essentials');
   renderTripEssentials('d-trip-essentials');
 
-  renderOverviewStats('m-sum-total','m-sum-avg');
-  renderOverviewStats('d-sum-total','d-sum-avg');
   renderHighlights('m-highlights');
   renderHighlights('d-highlights');
+  renderSummaryHero('m');
+  renderSummaryHero('d');
   renderCategoryBreakdown('m-sum-cat');
   renderCategoryBreakdown('d-sum-cat');
   renderBalance('m-sum-balance');
