@@ -184,6 +184,11 @@
   .day-chip{display:flex;flex-direction:column;align-items:center;line-height:1.2;border-radius:14px;padding:7px 14px;}
   .day-chip .dc-date{font-size:10.5px;font-weight:600;opacity:.75;margin-top:1px;}
   .day-chip.overview-chip{background:#101828;color:#fff;flex-direction:row;gap:6px;align-items:center;}
+  .mp-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line);text-decoration:none;color:var(--ink);font-size:12px;}
+  .mp-row:first-child{border-top:none;}
+  .mp-time{flex:none;width:78px;color:var(--sub);font-weight:600;font-size:11px;}
+  .mp-name{flex:1;min-width:0;line-height:1.35;}
+  .mp-go{flex:none;background:#101828;color:#fff;border-radius:8px;padding:4px 8px;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;gap:3px;}
   .po-row{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:14px 0;border-top:1px solid var(--line);}
   .po-row:first-child{border-top:none;}
   .po-side{display:flex;flex-direction:column;gap:6px;}
@@ -838,13 +843,14 @@
 
         <div class="m-section" data-section="map">
           <p class="main-title i18n" data-th="เส้นทางเดินทาง" data-en="Route map" style="font-size:17px;margin:6px 0 2px;">เส้นทางเดินทาง</p>
-          <p class="main-sub" style="margin:0 0 14px;"><span class="i18n" data-th="Day 1 · เฉิงตู" data-en="Day 1 · Chengdu">Day 1 · เฉิงตู</span></p>
+          <p class="main-sub" style="margin:0 0 14px;"><span id="m-map-day-sub">Day 1 · เฉิงตู</span></p>
           <div class="panel" style="margin-bottom:16px;">
             <div class="map-canvas" style="margin-bottom:6px;padding:0;">
               <iframe id="m-map-frame" class="real-map-frame" loading="lazy" title="Trip map"></iframe>
             </div>
             <p style="font-size:10px;color:var(--sub);margin:0 0 4px;">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit;">OpenStreetMap</a> contributors</p>
           </div>
+          <div class="panel" style="margin-bottom:16px;"><div class="panel-title"><span class="i18n" data-th="จุดหมายของวันนี้ (กดเปิด AMap)" data-en="Today's stops (tap for AMap)">จุดหมายของวันนี้ (กดเปิด AMap)</span></div><div id="m-map-places"></div></div>
           <div class="panel">
             <div class="panel-title"><span class="i18n" data-th="เปิดในแอปแผนที่" data-en="Open in map app">เปิดในแอปแผนที่</span></div>
             <button class="map-btn primary" id="m-map-today-amap"><span class="ic-inline" data-icon="compass"></span> <span class="i18n" data-th="ดูเส้นทางวันนี้บน AMap" data-en="Today's route on AMap">ดูเส้นทางวันนี้บน AMap</span></button>
@@ -1059,7 +1065,7 @@
             <div class="main-topbar">
               <div>
                 <p class="main-title i18n" data-th="เส้นทางเดินทาง" data-en="Route map">เส้นทางเดินทาง</p>
-                <p class="main-sub"><span class="i18n" data-th="Day 1 · เฉิงตู" data-en="Day 1 · Chengdu">Day 1 · เฉิงตู</span></p>
+                <p class="main-sub"><span id="d-map-day-sub">Day 1 · เฉิงตู</span></p>
               </div>
             </div>
             <div class="two-col" style="grid-template-columns:1.6fr 1fr;">
@@ -1070,6 +1076,7 @@
                 <p style="font-size:10px;color:var(--sub);margin:6px 0 0;">© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" style="color:inherit;">OpenStreetMap</a> contributors</p>
               </div>
               <div class="panel">
+                <div class="panel-title"><span class="i18n" data-th="จุดหมายของวันนี้ (กดเปิด AMap)" data-en="Today's stops (tap for AMap)">จุดหมายของวันนี้ (กดเปิด AMap)</span></div><div id="d-map-places" style="margin-bottom:14px;"></div>
                 <div class="panel-title"><span class="i18n" data-th="เปิดในแอปแผนที่" data-en="Open in map app">เปิดในแอปแผนที่</span></div>
                 <button class="map-btn primary" id="d-map-today-amap"><span class="ic-inline" data-icon="compass"></span> <span class="i18n" data-th="ดูเส้นทางวันนี้บน AMap" data-en="Today's route on AMap">ดูเส้นทางวันนี้บน AMap</span></button>
                 <button class="map-btn" id="d-map-whole-amap"><span class="ic-inline" data-icon="map"></span> <span class="i18n" data-th="ดูเส้นทางรวมทั้งทริป" data-en="Whole-trip route">ดูเส้นทางรวมทั้งทริป</span></button>
@@ -1472,16 +1479,16 @@ var DAYS = {
     caption_th:"เฉิงตู — วันที่ 1", caption_en:"Chengdu — Day 1",
     stops:[
       S("17 พ.ย. 22:00","ถึงสนามบินสุวรรณภูมิ Check-in เคาน์เตอร์ N","Arrive Suvarnabhumi, check in at counter N","เตรียมเอกสารและกระเป๋าให้พร้อม","Get documents and bags ready",null,"next"),
-      S("01:10 (18 พ.ย.)","เที่ยวบิน 3U3938 กรุงเทพฯ → เฉิงตู","Flight 3U3938 Bangkok → Chengdu","Sichuan Airlines · Airbus A320","Sichuan Airlines · Airbus A320","flight"),
+      S("01:10 (18 พ.ย.)","เที่ยวบิน 3U3938 กรุงเทพฯ (BKK) → เฉิงตู (TFU)","Flight 3U3938 Bangkok (BKK) → Chengdu (TFU)","ออก 18 พ.ย. 01:10 → ถึง 05:10 · Sichuan Airlines · ออกตั๋วแล้ว","Dep Nov 18 01:10 → arr 05:10 · Sichuan Airlines · ticketed","flight"),
       S("05:10","ถึงสนามบินเฉิงตู ผ่านตม. รับกระเป๋า","Arrive Chengdu airport, immigration, baggage","ทำธุระส่วนตัวให้เสร็จก่อนออกจากสนามบิน","Freshen up before leaving the airport",null),
       S("06:30","นั่งบัสสนามบินเข้าเมือง","Airport bus into the city","เดินตามป้าย airport bus ประตู G01 สาย Line1 → Chunxi Road · คนละ ¥15 · เที่ยวละ 30 นาที · ใช้เวลา 40 นาที","Follow airport bus signs to gate G01, Line 1 → Chunxi Road · ¥15 each · every 30 min · 40 min ride","bus",null,"¥15"),
-      S("07:10","ลงหน้าตึก IFS เดินไปฝากกระเป๋าโรงแรม","Get off at IFS, drop bags at the hotel","Atour Light Hotel Chengdu Chunxi Road Metro Station · 成都太古里春熙路地铁站亚朵X酒店","Atour Light Hotel Chengdu Chunxi Road Metro Station · 成都太古里春熙路地铁站亚朵X酒店","walk"),
+      S("07:10","ลงหน้าตึก IFS เดินไปฝากกระเป๋าโรงแรม","Get off at IFS, drop bags at the hotel","อโทร์ ไลท์ โฮเทล เฉิงตู ชุนซี โรด เมโทร สเตชั่น · 成都太古里春熙路地铁站亚朵X酒店","Atour Light Hotel Chengdu Chunxi Road Metro Station · 成都太古里春熙路地铁站亚朵X酒店","walk"),
       S("08:00","นั่งรถบัสไปศูนย์แพนด้า (Panda Base 熊猫基地)","Bus to Panda Base","รถบัสคนละ ¥8 · ค่าเข้าคนละ ¥55 (ป๊าม๊า 60+ เข้าฟรี) · ซื้อตั๋วรถกอล์ฟคนละ ¥30","Bus ¥8 each · entry ¥55 each (free for 60+) · golf cart ticket ¥30 each","bus",null,"¥55 + ¥30"),
       S("08:30–11:00","ดูแพนด้า แพนด้าแดง","See the pandas and red pandas","เดินชมในศูนย์ ใช้รถกอล์ฟช่วยถ้าเหนื่อย","Walk the base, use the golf cart if tired","walk"),
       S("11:30","นั่งรถกลับมา IFS","Back to IFS","","","bus"),
       S("12:00","มื้อเที่ยง ร้าน Dao te","Lunch at Dao te","","",null),
       S("13:00","ไหว้พระวัดต้าฉือ (IFS)","Daci Temple visit (near IFS)","","","walk"),
-      S("14:00","เช็คอินโรงแรม พักผ่อน","Hotel check-in and rest","ถ้ายังไหวเดินเล่นแถวโรงแรมได้","Stroll near the hotel if energy allows",null),
+      S("14:00","เช็คอินโรงแรม พักผ่อน","Hotel check-in and rest","ห้องเอ็กเซ็กคิวทีฟ เตียงควีนไซส์ · 18–22 พ.ย. · ยืนยันแล้ว · ถ้ายังไหวเดินเล่นแถวโรงแรมได้","Executive queen room · Nov 18–22 · confirmed · stroll nearby if energy allows",null),
       S("18:00","มื้อเย็น เชฟเฟย","Dinner at Chef Fei","","",null),
       S("19:00","นั่ง DiDi เดินเที่ยวสะพานอันชุน","DiDi to Anshun Bridge","สะพานเปิดไฟ 19:00–20:30","Bridge lights on 19:00–20:30","didi"),
       S("20:30","กลับโรงแรมพักผ่อน (Free time)","Back to hotel, free time","","",null)
@@ -1500,10 +1507,10 @@ var DAYS = {
       S("ก่อนออกเดินทาง","โน้ตสำคัญ: ของต้องห้ามบนรถไฟความเร็วสูงจีน","Important: banned items on China high-speed rail","ของมีคม · วัตถุไวไฟ · พาวเวอร์แบงค์ไม่เกิน 27,000 mAh · สเปรย์แรงดันไม่เกิน 150 ml/ขวด ประเภทละ 1 ขวด · น้ำหอม/ของเหลวมีแอลกอฮอล์ไม่เกิน 100 ml/ขวด ประเภทละ 1 ขวด · เครื่องดื่มแอลกอฮอล์ต้องไม่เปิดและมีฉลาก","Sharp objects · flammables · power banks max 27,000 mAh · pressurised sprays max 150 ml, 1 per type · perfume/alcohol liquids max 100 ml, 1 per type · alcoholic drinks sealed with label only",null),
       S("08:30","นั่ง DiDi ไปสถานีรถไฟเฉิงตูตง","DiDi to Chengdu East Station","คันละ ¥20–30","¥20–30 per car","didi",null,"¥20–30"),
       S("09:00","ถึงสถานีรถไฟเฉิงตูตง","Arrive at Chengdu East Station","","",null),
-      S("10:06","รถไฟไปสถานีหวงหลงจิ่วจ้าย","Train to Huanglong Jiuzhaigou Station","ใช้เวลา 2 ชม. 25 นาที","2h 25m journey","train"),
+      S("10:06–12:31","รถไฟ เฉิงตูตง → หวงหลงจิ่วจ้าย","Train Chengdu East → Huanglong Jiuzhaigou","รอบ 10:06 ถึง 12:31 (2 ชม. 25 นาที) · ซื้อตั๋วแล้ว · ยอดรวมตามใบจอง ฿6,622.16","10:06 → 12:31 (2h 25m) · tickets bought · booking total ฿6,622.16","train",null,"฿6,622.16"),
       S("12:30","ถึงสถานีหวงหลงจิ่วจ้าย ทานมื้อเที่ยงที่สถานี","Arrive, lunch at the station","ออกจากสถานี ขึ้นบันไดเลื่อนเลี้ยวซ้าย → ตึกศูนย์บริการนักท่องเที่ยว (游客服务中心 / Tourist Service Center)","Exit, take the escalator, turn left → Tourist Service Center (游客服务中心)",null),
       S("13:30","นั่งรถไปจิ่วจ้ายโกว","Transfer to Jiuzhaigou","ใช้เวลา 1.5–2 ชั่วโมง","1.5–2 hours","van"),
-      S("15:30","เช็คอินโรงแรม SANJNGY Serene Realm Hotel (Jiuzhaigou Visitor Center)","Check in at SANJNGY Serene Realm Hotel (Jiuzhaigou Visitor Center)","","",null),
+      S("15:30","เช็คอินโรงแรม SANJNGY . Serene Realm Hotel (Jiuzhaigou Visitor Center)","Check in at SANJNGY . Serene Realm Hotel (Jiuzhaigou Visitor Center)","ห้องคิงติดเนินเขา · 19–20 พ.ย. · 2 ห้อง 1 คืน · ยืนยันแล้ว","King room, hillside · Nov 19–20 · 2 rooms, 1 night · confirmed",null),
       S("16:00","Free time พักผ่อน หรือเดินเล่นแถวโรงแรม","Free time near the hotel","","",null),
       S("18:00","มื้อเย็น หม้อไฟเนื้อจามรี","Dinner: yak-meat hotpot","","",null)
     ]
@@ -1517,15 +1524,15 @@ var DAYS = {
     caption_th:"จิ่วจ้ายโกว → เฉิงตู — วันที่ 3", caption_en:"Jiuzhaigou → Chengdu — Day 3",
     stops:[
       S("07:30","อาหารเช้าที่โรงแรม พร้อมเช็คเอาท์และฝากกระเป๋า","Breakfast, check out, leave bags","","",null),
-      S("08:15","เข้าอุทยานจิ่วจ้ายโกว","Enter Jiuzhaigou Park","ใช้รถบัสในอุทยานเป็นหลัก","Mainly use the park shuttle bus","bus"),
+      S("08:15–10:00","เข้าอุทยานจิ่วจ้ายโกว (ตั๋วรอบ 08:30–10:00)","Enter Jiuzhaigou Park (ticket slot 08:30–10:00)","ตั๋วเข้าชม + รถรับส่งในอุทยาน จองแล้ว 20 พ.ย. · ผู้ใหญ่ ฿4,816.86 · ผู้สูงอายุ 60+ ฿802.82 (ตามใบจอง) · ใช้รถบัสในอุทยานเป็นหลัก","Entry + shuttle tickets booked for Nov 20 · adult ฿4,816.86 · 60+ ฿802.82 (per booking) · mainly use the park shuttle","bus",null,"฿4,816.86 / ฿802.82"),
       S("12:00","มื้อเที่ยงในอุทยาน (Food court)","Lunch at the park food court","","",null),
       S("14:30–15:00","เริ่มออกจากอุทยาน ไปรับกระเป๋าที่โรงแรม","Leave the park, pick up bags at the hotel","","",null),
       S("15:00–18:00","นั่งรถไปสถานีรถไฟหวงหลงจิ่วจ้าย","Transfer to Huanglong Jiuzhaigou Station","เผื่อรถติด แวะห้องน้ำ และผู้สูงอายุ","Buffer for traffic, restroom stops and the elderly","van"),
       S("18:00–19:15","ถึงสถานี กินมื้อเย็นแบบง่ายๆ","Arrive at the station, simple dinner","","",null),
       S("19:15–20:00","เข้าห้องน้ำ พัก และเตรียมขึ้นรถไฟ","Restroom, rest, get ready for the train","","",null),
       S("20:00","เข้าโซนรอขึ้นรถไฟ","Go to the train waiting area","","",null),
-      S("20:33","รถไฟออกกลับเฉิงตู","Train departs back to Chengdu","","","train"),
-      S("22:20","ถึงเฉิงตู กลับโรงแรมพักผ่อน","Arrive Chengdu, back to the hotel to rest","","",null)
+      S("20:33–22:20","รถไฟออกกลับเฉิงตู (หวงหลงจิ่วจ้าย → เฉิงตูตง)","Train back to Chengdu (Huanglong Jiuzhaigou → Chengdu East)","รอบ 20:33 ถึง 22:20 · ซื้อตั๋วแล้ว · ยอดรวมตามใบจอง ฿10,496.96","20:33 → 22:20 · tickets bought · booking total ฿10,496.96","train",null,"฿10,496.96"),
+      S("22:20","ถึงเฉิงตูตง กลับโรงแรมพักผ่อน","Arrive Chengdu, back to the hotel to rest","","",null)
     ]
   },
   4: {
@@ -1565,10 +1572,21 @@ var DAYS = {
       S("16:00","กลับถึงโรงแรม เตรียมกระเป๋าไปขึ้นบัส","Back at the hotel, pack for the airport bus","","",null),
       S("17:00","ขึ้นรถบัสไปสนามบิน","Airport bus","Line1 สีฟ้า ขึ้นรถใต้ตูดหมีแพนด้า · คนละ ¥15","Blue Line 1, board under the panda's bottom · ¥15 each","bus",null,"¥15"),
       S("18:00","ถึงสนามบินเฉิงตู","Arrive at Chengdu airport","","",null),
-      S("21:50–00:10 (+1 วัน)","เที่ยวบิน 3U3937 เฉิงตู → กรุงเทพฯ","Flight 3U3937 Chengdu → Bangkok","ถึงสุวรรณภูมิ 00:10 น. วันที่ 23 พ.ย.","Arrive Suvarnabhumi 00:10 on Nov 23","flight")
+      S("21:50–00:10 (+1 วัน)","เที่ยวบิน 3U3937 เฉิงตู (TFU) → กรุงเทพฯ (BKK)","Flight 3U3937 Chengdu (TFU) → Bangkok (BKK)","ออก 22 พ.ย. 21:50 → ถึงสุวรรณภูมิ 23 พ.ย. 00:10 · ออกตั๋วแล้ว","Dep Nov 22 21:50 → arr Nov 23 00:10 · ticketed","flight")
     ]
   }
 };
+
+var AMAP_KW = {
+  1: [null,null,'成都天府国际机场','成都春熙路','成都国际金融中心IFS','成都太古里春熙路地铁站亚朵X酒店','成都大熊猫繁育研究基地','成都大熊猫繁育研究基地','成都国际金融中心IFS','大慈寺','成都太古里春熙路地铁站亚朵X酒店',null,'安顺廊桥','成都太古里春熙路地铁站亚朵X酒店'],
+  2: [null,'成都太古里春熙路地铁站亚朵X酒店',null,'成都东站','成都东站','成都东站','黄龙九寨站','黄龙九寨站','九寨沟 SANJNGY Serene Realm Hotel','九寨沟 SANJNGY Serene Realm Hotel',null],
+  3: ['九寨沟 SANJNGY Serene Realm Hotel','九寨沟风景名胜区',null,'九寨沟 SANJNGY Serene Realm Hotel','黄龙九寨站','黄龙九寨站','黄龙九寨站','黄龙九寨站','黄龙九寨站','成都东站'],
+  4: [null,'东郊记忆',null,'仰天窝广场','仰天窝广场','灌县古城',null,'灌县古城','交子之环','交子之环','成都SKP',null],
+  5: [null,null,'太古里 陶陶居','宽窄巷子',null,'成都太古里春熙路地铁站亚朵X酒店','成都天府国际机场','成都天府国际机场']
+};
+Object.keys(AMAP_KW).forEach(function(d){
+  AMAP_KW[d].forEach(function(kw, i){ if(kw && DAYS[d] && DAYS[d].stops[i]) DAYS[d].stops[i].amap = kw; });
+});
 var currentDay = 1;
 var currentCurrency = 'CNY';
 var TRIP_START = new Date(2026, 10, 18, 0, 0, 0);
@@ -1641,7 +1659,7 @@ var DAY_MAP_QUERY = {
 // on each day's main area, with a marker on the approximate spot.
 var DAY_COORDS = {
   1: {lat:30.6598, lon:104.0633, delta:0.02},  // Chengdu, Taikoo Li area
-  2: {lat:33.2542, lon:103.9186, delta:0.05},  // Jiuzhaigou valley
+  2: {lat:33.2000, lon:103.9300, delta:0.35},  // Huanglong Jiuzhaigou station -> Jiuzhaigou
   3: {lat:33.2542, lon:103.9186, delta:0.05},  // Jiuzhaigou scenic area
   4: {lat:30.6556, lon:104.1180, delta:0.04},  // Dongjiao Jiyi
   5: {lat:30.6700, lon:104.0560, delta:0.02}  // Kuanzhai Alley
@@ -1651,7 +1669,24 @@ function osmEmbedUrl(dayNum){
   var left = c.lon - c.delta, right = c.lon + c.delta, bottom = c.lat - c.delta, top = c.lat + c.delta;
   return 'https://www.openstreetmap.org/export/embed.html?bbox=' + left + ',' + bottom + ',' + right + ',' + top + '&layer=mapnik&marker=' + c.lat + ',' + c.lon;
 }
+function renderMapPlaces(){
+  var day = DAYS[currentDay] || DAYS[1];
+  var th = LANG === 'th';
+  var sub = 'Day ' + currentDay + ' · ' + (th ? day.caption_th : day.caption_en).replace(/ — .*$/, '') + ' · ' + fmtDayShort(currentDay);
+  ['m-map-day-sub','d-map-day-sub'].forEach(function(id){ var e = document.getElementById(id); if(e) e.textContent = sub; });
+  var seen = {}, html = '';
+  (day.stops || []).forEach(function(s){
+    if(!s.amap || seen[s.amap]) return;
+    seen[s.amap] = 1;
+    html += '<a class="mp-row" href="'+amapSearchUrl(s.amap)+'" target="_blank" rel="noopener">' +
+      '<span class="mp-time">'+(th?s.time_th:s.time_en)+'</span>' +
+      '<span class="mp-name">'+(th?s.title_th:s.title_en)+'</span>' +
+      '<span class="mp-go">'+ICON('pin',13)+' AMap</span></a>';
+  });
+  ['m-map-places','d-map-places'].forEach(function(id){ var e = document.getElementById(id); if(e) e.innerHTML = html || '<p style="font-size:12px;color:var(--sub);margin:0;">'+(th?'ยังไม่มีจุดหมายที่ผูกกับ AMap':'No AMap-linked stops yet')+'</p>'; });
+}
 function renderRealMaps(){
+  renderMapPlaces();
   var url = osmEmbedUrl(currentDay);
   ['m-map-frame','d-mini-map-frame','d-map-frame'].forEach(function(id){
     var el = document.getElementById(id);
@@ -1662,7 +1697,7 @@ function amapSearchUrl(keyword){
   return 'https://uri.amap.com/search?keyword=' + encodeURIComponent(keyword) + '&src=teamintrip';
 }
 function amapStopUrl(stop){
-  var kw = (stop.title_en || stop.title_th || '').split('·')[0].trim() || 'Chengdu';
+  var kw = stop.amap || (stop.title_en || stop.title_th || '').split('·')[0].trim() || 'Chengdu';
   return amapSearchUrl(kw);
 }
 function wireAmapButtons(){
@@ -3356,15 +3391,15 @@ document.getElementById('memberDetailModal').addEventListener('click', function(
 // run (adds flight_out/flight_back/hotels columns + update permission).
 // ============================================================
 var DEFAULT_HOTELS = [
-  {label_th:'ที่พักคืนที่ 1 (18 พ.ย.) — เฉิงตู', label_en:'Night 1 (Nov 18) — Chengdu', name:'', address:''},
-  {label_th:'ที่พักคืนที่ 2 (19 พ.ย.) — จิ่วจ้ายโกว', label_en:'Night 2 (Nov 19) — Jiuzhaigou', name:'', address:''},
-  {label_th:'ที่พักคืนที่ 3 (20 พ.ย.) — เฉิงตู', label_en:'Night 3 (Nov 20) — Chengdu', name:'', address:''},
-  {label_th:'ที่พักคืนที่ 4 (21 พ.ย.) — เฉิงตู', label_en:'Night 4 (Nov 21) — Chengdu', name:'', address:''}
+  {label_th:'ที่พักคืนที่ 1 (18 พ.ย.) — เฉิงตู', label_en:'Night 1 (Nov 18) — Chengdu', name:'อโทร์ ไลท์ โฮเทล เฉิงตู ชุนซี โรด เมโทร สเตชั่น (Atour Light Hotel Chengdu Chunxi Road Metro Station)', address:'成都太古里春熙路地铁站亚朵X酒店'},
+  {label_th:'ที่พักคืนที่ 2 (19 พ.ย.) — จิ่วจ้ายโกว', label_en:'Night 2 (Nov 19) — Jiuzhaigou', name:'SANJNGY . Serene Realm Hotel (Jiuzhaigou Visitor Center)', address:'九寨沟 SANJNGY Serene Realm Hotel'},
+  {label_th:'ที่พักคืนที่ 3 (20 พ.ย.) — เฉิงตู', label_en:'Night 3 (Nov 20) — Chengdu', name:'อโทร์ ไลท์ โฮเทล เฉิงตู ชุนซี โรด เมโทร สเตชั่น (Atour Light Hotel Chengdu Chunxi Road Metro Station)', address:'成都太古里春熙路地铁站亚朵X酒店'},
+  {label_th:'ที่พักคืนที่ 4 (21 พ.ย.) — เฉิงตู', label_en:'Night 4 (Nov 21) — Chengdu', name:'อโทร์ ไลท์ โฮเทล เฉิงตู ชุนซี โรด เมโทร สเตชั่น (Atour Light Hotel Chengdu Chunxi Road Metro Station)', address:'成都太古里春熙路地铁站亚朵X酒店'}
 ];
 var DEMO_TRIP = {
   name_th:'เฉิงตู–จิ่วจ้ายโกว 2026', name_en:'Chengdu–Jiuzhaigou 2026',
   start_date:'2026-11-18', end_date:'2026-11-22',
-  flight_out:'3U3938 · 18 พ.ย. · 01:10–05:10', flight_back:'3U3937 · 22 พ.ย. · 21:50–00:10 (+1)',
+  flight_out:'3U3938 · BKK → TFU · 18 พ.ย. 01:10–05:10', flight_back:'3U3937 · TFU → BKK · 22 พ.ย. 21:50 – 23 พ.ย. 00:10',
   hotels: DEFAULT_HOTELS
 };
 function tripData(){ return currentTrip || DEMO_TRIP; }
